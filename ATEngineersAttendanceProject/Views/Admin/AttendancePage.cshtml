@@ -98,11 +98,16 @@
                                     <th>WorkId</th>
                                     <th>EngineerId</th>
                                     <th>AT Engineer</th>
+                                    <th>Section</th>
                                     <th>Department</th>
-                                    <th>Location</th>
-                                    <th>Village</th>
-                                    <th>Mandal</th>
                                     <th>District</th>
+                                    <th>Mandal</th>
+                                    <th>Village</th>
+                                    <th>Location</th>
+                                    <th>PO No</th>
+                                    <th>PO Code</th>
+                                    <th>PO Date</th>
+                                    <th>PO Copy</th>
                                 </tr>
                             </thead>
                             <tbody class="table-body">
@@ -114,11 +119,18 @@
                                             <td>@sec.WorkId</td>
                                             <td>@sec.EngineerId</td>
                                             <td>@sec.Name</td>
+                                            <td>@sec.Section</td>
                                             <td>@sec.Department</td>
-                                            <td>@sec.Location</td>
-                                            <td>@sec.Village</td>
-                                            <td>@sec.Mandal</td>
                                             <td>@sec.District</td>
+                                            <td>@sec.Mandal</td>
+                                            <td>@sec.Village</td>
+                                            <td>@sec.Location</td>
+                                            <td>@sec.PONo</td>
+                                            <td>@sec.POCode</td>
+                                            <td>@sec.PODate</td>
+                                            <td>
+                                                <a href="@Url.Action("GetPOFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link">Show file</a>
+                                            </td>
                                         </tr>
                                     }
                                 }

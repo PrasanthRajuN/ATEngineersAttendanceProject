@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ATEngineersAttendanceProject.Models.Admin.AttendancePageModel>
 @{
-    Layout = null; // Assuming this is a standalone page, remove this if using a layout
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -30,25 +30,28 @@
             vertical-align: middle;
         }
 
-        .show-file {
-            cursor: pointer;
-            color: #5D6D7E;
-            text-decoration: underline;
+        .table-body {
+            background-color: white;
         }
 
-        .table-body{
-            background-color:white;
+        /* Make rows look clickable */
+        .clickable-row {
+            cursor: pointer;
         }
+
+            .clickable-row:hover {
+                background-color: #d3c4ff;
+            }
     </style>
 </head>
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-8">
-                <a href="@Url.Action("ATEngineersPage","ATEngineers")" class="btn btn-primary mb-2 mr-2">Back</a>
+                <a href="@Url.Action("ATEngineersPage", "ATEngineers")" class="btn btn-primary mb-2 mr-2">Back</a>
                 <div class="attendance-table p-4 shadow">
                     <h3 class="text-center text-uppercase mb-4" style="color: #6C3483;">Your Work</h3>
-                    <div class="table-responsive " style="text-align:center">
+                    <div class="table-responsive" style="text-align:center">
                         <table class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
@@ -56,33 +59,48 @@
                                     <th>Name</th>
                                     <th>Section</th>
                                     <th>Department</th>
-                                    <th>Location</th>
-                                    <th>Village</th>
-                                    <th>Mandal</th>
                                     <th>District</th>
+                                    <th>Mandal</th>
+                                    <th>Village</th>
+                                    <th>Location</th>
+                                    <th>PO No</th>
+                                    <th>PO Code</th>
+                                    <th>PO Date</th>
+                                    <th>PO Copy</th>
                                     <th>Submit</th>
                                 </tr>
                             </thead>
                             <tbody class="table-body">
-                                <!-- Example Row (You can loop through your data here using Razor) -->
                                 @if (Model != null && Model.Any())
                                 {
                                     foreach (var sec in Model)
                                     {
-                                            <tr>
-                                                <td>@sec.WorkId</td>
-                                                <td>@sec.Name</td>
-                                                <td>@sec.Section</td>
-                                                <td>@sec.Department</td>
-                                                <td>@sec.Location</td>
-                                                <td>@sec.Village</td>
-                                                <td>@sec.Mandal</td>
-                                                <td>@sec.District</td>
-                                                <td>
-                                                    <a style="background-color:#793ccf; color:white" href="@Url.Action("UploadPage", "Upload", new { Attendanceid = sec.WorkId })" class="btn btn-custom">upload</a>
-                                                </td>
-                                            </tr>
+                                        <tr class="clickable-row" onclick="window.location.href='@Url.Action("UploadPage", "Upload", new { Attendanceid = sec.WorkId })'">
+                                            <td>@sec.WorkId</td>
+                                            <td>@sec.Name</td>
+                                            <td>@sec.Section</td>
+                                            <td>@sec.Department</td>
+                                            <td>@sec.District</td>
+                                            <td>@sec.Mandal</td>
+                                            <td>@sec.Village</td>
+                                            <td>@sec.Location</td>
+                                            <td>@sec.PONo</td>
+                                            <td>@sec.POCode</td>
+                                            <td>@sec.PODate</td>
+                                            <td>
+                                                <a href="@Url.Action("GetPOFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link" download onclick="event.stopPropagation()">Show file</a>
+                                            </td>
+                                            <td>
+                                                <a style="background-color:#793ccf; color:white" href="@Url.Action("UploadPage", "Upload", new { Attendanceid = sec.WorkId })" class="btn btn-custom" onclick="event.stopPropagation()">Upload</a>
+                                            </td>
+                                        </tr>
                                     }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="12" class="text-center">No Work available.</td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
@@ -91,9 +109,8 @@
             </div>
         </div>
     </div>
-    <script>
 
-    <!-- Bootstrap JS (Optional but needed if you want interactive elements like modals) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

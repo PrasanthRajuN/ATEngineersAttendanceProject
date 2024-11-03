@@ -61,6 +61,10 @@
                                     <th>Village</th>
                                     <th>Mandal</th>
                                     <th>District</th>
+                                    <th>PO No</th>
+                                    <th>PO Code</th>
+                                    <th>PO Date</th>
+                                    <th>PO Copy</th>
                                     <th>Submit</th>
                                 </tr>
                             </thead>
@@ -82,6 +86,12 @@
                                                 <td>@sec.Village</td>
                                                 <td>@sec.Mandal</td>
                                                 <td>@sec.District</td>
+                                                <td>@sec.PONo</td>
+                                                <td>@sec.POCode</td>
+                                                <td>@sec.PODate</td>
+                                                <td>
+                                                    <a href="@Url.Action("GetPOFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link" download onclick="event.stopPropagation()">Show file</a>
+                                                </td>
                                                 <td><button class="btn btn-success">Submitted</button></td>
                                             </tr>
                                         }

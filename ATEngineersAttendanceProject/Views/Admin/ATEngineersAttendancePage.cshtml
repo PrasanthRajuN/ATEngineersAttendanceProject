@@ -74,10 +74,9 @@
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-8">
                 <a href="@Url.Action("AdminPage","Admin")" class="btn btn-primary mb-2 mr-2">Back</a>
-
                 <div class="attendance-table p-4 shadow">
                     <h3 class="text-center text-uppercase mb-4" style="color: #6C3483;">AT Engineers Attendance</h3>
-                    <div class="table-responsive" style="text-align:center">
+                    <div class="table-responsive" style="text-align:center;">
                         <table class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
@@ -89,6 +88,10 @@
                                     <th>Village</th>
                                     <th>Mandal</th>
                                     <th>District</th>
+                                    <th>PO No</th>
+                                    <th>PO Code</th>
+                                    <th>PO Date</th>
+                                    <th>PO Copy</th>
                                     <th>Uploaded AT Report</th>
                                     <th>Uploaded Selfie</th>
                                     <th>Remarks</th>
@@ -108,13 +111,17 @@
                                                 <td>@sec.Village</td>
                                                 <td>@sec.Mandal</td>
                                                 <td>@sec.District</td>
+                                                <td>@sec.PONo</td>
+                                                <td>@sec.POCode</td>
+                                                <td>@sec.PODate</td>
                                                 <td>
-                                                    <!-- Add a link to view or download the report file -->
+                                                    <a href="@Url.Action("GetPOFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link">Show file</a>
+                                                </td>
+                                                <td>
                                                     <a href="@Url.Action("GetReportFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link">Show file</a>
                                                 </td>
 
                                                 <td>
-                                                    <!-- Show image for Selfie -->
                                                     <span class="show-file" onclick="showImage('selfie', @sec.WorkId)">Show Image</span>
                                                 </td>
                                                 @if (@sec.Remarks != null)
@@ -130,8 +137,8 @@
                                 }
                             </tbody>
                         </table>
-
                         <a style="background-color:#793ccf; color:white" href="@Url.Action("AttendancePage", "AttendancePage")" class="btn btn-custom">Show Alloted Work</a>
+
                     </div>
                 </div>
             </div>

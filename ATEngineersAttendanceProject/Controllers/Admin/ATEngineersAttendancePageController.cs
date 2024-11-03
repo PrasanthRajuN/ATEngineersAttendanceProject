@@ -34,12 +34,24 @@ namespace ATEngineersAttendanceProject.Controllers.Admin
 
             if (report != null && report.Report != null)
             {
-                string fileName = "Report_" + id + ".pdf"; 
-                string contentType = "application/pdf"; 
-
-                return File(report.Report, contentType, fileName); 
+                string fileName = "Report_" + id + ".pdf";
+                string contentType = "application/pdf";
+                return File(report.Report, contentType, fileName);
             }
             return NotFound("Report file not found."); 
+        }
+        [HttpGet]
+        public IActionResult GetPOFile(int id)
+        {
+            var report = _context.AttendancePage.FirstOrDefault(a => a.WorkId == id);
+
+            if (report != null && report.POCopy != null)
+            {
+                string fileName = "POCopy_" + id + ".pdf";
+                string contentType = "application/pdf";
+                return File(report.POCopy, contentType, fileName);
+            }
+            return NotFound("POCopy file not found.");
         }
     }
 }
