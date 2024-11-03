@@ -1,0 +1,182 @@
+﻿@model IEnumerable<ATEngineersAttendanceProject.Models.Admin.DefiningData.DistrictModel>
+
+@{
+    ViewData["Title"] = "Manage District";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container">
+        <a href="@Url.Action("DefiningPage", "DefiningData")" class="back-arrow">← Back to Define page</a>
+
+        <div class="manage-district-container">
+            <h2>@ViewData["Title"]</h2>
+
+            <table class="district-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var dist in Model)
+                        {
+                            <tr>
+                                <td>@dist.Id</td>
+                                <td>@dist.Name</td>
+                                <td>
+                                    <form method="post" action="/District/DeleteDistrict/@dist.Id" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this district?');">
+                                        <button type="submit" class="delete-btn">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">No District available.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="add-district-container">
+                <h3>Add a New District</h3>
+                <form method="post" action="/District/AddDistrict" class="add-district-form">
+                    <label for="Name">District Name:</label>
+                    <input type="text" name="Name" class="form-control" placeholder="Enter District name" required />
+                    <button type="submit" class="add-btn">Add District</button>
+                </form>
+            </div>
+
+            <footer class="text-center mt-5">
+                <p>&copy; @DateTime.Now.Year - AdminPageProject</p>
+            </footer>
+        </div>
+    </div>
+
+    <style>
+        .manage-district-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .district-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .district-table th, .district-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .district-table th {
+            background-color: #f2f2f2;
+        }
+
+        .district-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .district-table tr:hover {
+            background-color: #ddd;
+        }
+
+        .add-district-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-district-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .add-district-form input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-district-form input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
+        .add-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            align-self: flex-start;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background-color: #218838;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .back-arrow {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .back-arrow:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

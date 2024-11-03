@@ -1,0 +1,114 @@
+﻿@model ATEngineersAttendanceProject.Models.Admin.AttendancePageModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Toast Notification -->
+    <div id="toastMessage" class="toast align-items-center text-bg-@ViewBag.ToastType border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+        <div class="d-flex">
+            <div class="toast-body">
+                @ViewBag.ToastMessage
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h2>Upload Picture and Location</h2>
+        <h1 style="display:none">@ViewBag.Message</h1>
+        <form asp-action="UploadPage" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <!-- Display live video stream with flip correction -->
+                <video id="video" width="320" height="240" autoplay style="transform: scaleX(-1);"></video>
+                <input type="hidden" name="Id" value="@ViewBag.message" />
+
+                <!-- Hidden canvas for image capture -->
+                <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+                <!-- Hidden inputs for form submission -->
+                <input type="hidden" name="Image" id="ImageInput" />
+                <input type="hidden" name="Latitude" id="LatitudeInput" />
+                <input type="hidden" name="Longitude" id="LongitudeInput" />
+            </div>
+            <div class="mb-3">
+                <label for="report" class="form-label">Upload File</label>
+                <input type="file" name="report" class="form-control" id="report" required />
+            </div>
+            <div class="mb-3">
+                <label for="remarks" class="form-label">Remarks</label>
+                <input type="text" name="remarks" class="form-control" id="remarks" required />
+            </div>
+            <button type="submit" id="uploadBtn" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Access the user's camera and show live video stream
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const imageInput = document.getElementById('ImageInput');
+        const latitudeInput = document.getElementById('LatitudeInput');
+        const longitudeInput = document.getElementById('LongitudeInput');
+
+        // Start video stream from the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => {
+                console.error("Error accessing camera: " + err);
+            });
+
+        // Take a picture and store it as Base64 when the upload button is clicked
+        document.getElementById('uploadBtn').addEventListener('click', function (event) {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Check if a file is selected
+            const reportInput = document.getElementById('report');
+            if (!reportInput.files.length) {
+                alert("Please upload a file.");
+                return; // Exit the function if no file is selected
+            }
+
+            // Capture the image
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/png').split(',')[1]; // Convert image to Base64
+            imageInput.value = imageData;
+
+            // Get user location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    latitudeInput.value = position.coords.latitude;
+                    longitudeInput.value = position.coords.longitude;
+
+                    // Now submit the form
+                    document.querySelector('form').submit();
+                }, function (error) {
+                    console.error("Error getting location: " + error);
+                    alert("Unable to retrieve your location.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+
+        // Show toast notification if there is a message to display
+        @if (!string.IsNullOrEmpty(ViewBag.ToastMessage))
+        {
+            <text>
+                    var toastEl = document.getElementById('toastMessage');
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+            </text>
+        }
+    </script>
+</body>
+</html>

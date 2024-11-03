@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ATEngineersAttendanceProject.Models.Admin.DefiningData.LocationsModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Option</title>
+</head>
+<body>
+    <h2>Select District</h2>
+
+    <!-- District Dropdown -->
+    <select id="districtDropdown" onchange="loadMandals()">
+        <option value="">-- Select a district --</option>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var dis in Model)
+            {
+                <option value="@dis.District">@dis.District</option>
+            }
+        }
+    </select>
+
+    <!-- Mandal Dropdown -->
+    <h2>Select Mandal</h2>
+    <select id="mandalDropdown" onchange="loadVillages()">
+        <option value="">-- Select a mandal --</option>
+    </select>
+
+
+    <h2>Select Village</h2>
+    <select id="villageDropdown" onchange="loadLocations()">
+        <option value="">-- Select a Village --</option>
+    </select>
+
+    <h2>Select Location</h2>
+    <select id="locationDropdown" >
+        <option value="">-- Select a Location --</option>
+    </select>
+    <script>
+        function loadMandals() {
+            const district = document.getElementById("districtDropdown").value;
+
+            if (district) {
+                fetch(`/Admin/GetMandals?district=${encodeURIComponent(district)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear previous options
+                        const mandalDropdown = document.getElementById("mandalDropdown");
+                        mandalDropdown.innerHTML = '<option value="">-- Select a mandal --</option>';
+
+                        // Populate new options
+                        data.forEach(mandal => {
+                            const option = document.createElement("option");
+                            option.value = mandal;
+                            option.text = mandal;
+                            mandalDropdown.add(option);
+                        });
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+        }
+        
+    </script>
+</body>
+</html>
