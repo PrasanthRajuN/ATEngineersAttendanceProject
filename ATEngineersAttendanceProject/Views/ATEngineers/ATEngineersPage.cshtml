@@ -2,7 +2,6 @@
     ViewData["Title"] = "ATEngineer Page";
 }
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,105 +14,187 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <style>
+        /* Reset margin and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Background color and center alignment */
         body {
-            background-color: #1f1f2e; /* Dark professional background */
-            color: #ffffff;
+            background-color: #BFD7ED;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: center;
+            position: relative;
+            padding: 20px; /* Added padding for smaller screens */
         }
 
-        .atengineer-page {
+        .main-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
             text-align: center;
-            margin-top: 50px;
+            margin: auto;
+            margin-bottom: 25px;
         }
 
+        /* Header */
         h1 {
-            font-size: 2.5rem;
-            color: #ffffff;
-            margin-bottom: 45px;
+            color: #003B73;
+            font-size: 26px;
+            margin-bottom: 30px;
         }
 
-        .card-custom {
-            background-color: #29294a; /* Card background color */
+        /* Button styling */
+        .btn-custom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #60A3D9;
             color: #ffffff;
             border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            margin: 15px 0;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 220px;
-            text-align: center;
-            padding: 20px;
-            margin: 20px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
         }
 
-            .card-custom:hover {
-                transform: scale(1.05);
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-            }
-
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #5a5aff; /* Icon color */
+        .btn-custom:hover {
+            background-color: #0074B7;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Back button styling */
-        .btn-back {
-            position: absolute;
-            left: 20px;
-            top: 20px;
+        .btn-custom i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Loading overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Footer buttons styling */
+        .footer-buttons {
+            display: flex;
+            justify-content: center; /* Center buttons */
+            padding: 10px 20px;
+            margin-top: auto; /* Push to bottom */
+            max-width: 500px; /* Match the main container's max-width */
+            margin-left: auto; /* Center horizontally */
+            margin-right: auto; /* Center horizontally */
+            width: 100%; /* Full width for the footer buttons */
+        }
+
+        .btn-back, .btn-change-password {
+            background-color: #003B73;
             color: #ffffff;
-            border-color: #ffffff;
-            font-size: 1rem;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 100%; /* Full width for buttons */
+            margin: 0 5px; /* Space between buttons */
         }
 
-        /* Change Password button styling */
-        .btn-change-password {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            color: #ffffff;
-            border-color: #ffffff;
-            font-size: 1rem;
+        .btn-back:hover, .btn-change-password:hover {
+            background-color: #0074B7;
+        }
+
+        .btn-back i, .btn-change-password i {
+            margin-right: 8px;
+            font-size: 18px;
         }
 
         /* Responsive adjustments */
-        @@media (max-width: 500px) {
-            .card-deck {
-                flex-direction: column;
-                align-items: center;
+        @@media (max-width: 576px) {
+            .main-container {
+                padding: 20px;
+                width: 100%; /* Full width on smaller screens */
+                max-width: none; /* Remove max-width for smaller screens */
+            }
+
+ h1 {
+                font-size: 22px; /* Smaller heading size */
+            }
+
+            .btn-custom {
+                font-size: 16px; /* Adjust button font size */
+                padding: 10px; /* Smaller padding for buttons */
+            }
+
+            .footer-buttons {
+                flex-direction: column; /* Stack buttons vertically on smaller screens */
+                padding: 10px; /* Adjust padding for smaller screens */
+                max-width: none; /* Remove max-width for smaller screens */
+            }
+
+            .btn-back, .btn-change-password {
+                margin-bottom: 10px; /* Add space between buttons on smaller screens */
+                width: 100%; /* Full width on smaller screens */
             }
         }
     </style>
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 
-    <div class="atengineer-page">
-        <a href="@Url.Action("Index", "Login")" class="btn btn-outline-light btn-back"><i class="fas fa-arrow-left"></i> Back</a>
-        <a href="@Url.Action("UpdatePassword", "UpdatePassword")" class="btn btn-outline-light btn-change-password">Change Password</a>
-
+    <!-- Centered main container -->
+    <div class="main-container">
         <!-- Heading -->
         <h1>ATEngineer Page</h1>
 
-        <!-- Card container with cards as buttons -->
-        <div class="d-flex justify-content-center flex-wrap">
-            <!-- Card for Show Work -->
-            <a href="@Url.Action("ShowWork", "ShowWork")" class="card card-custom text-decoration-none">
-                <div class="card-body">
-                    <i class="fas fa-clipboard-list card-icon"></i>
-                    <h5 class="card-title">Show Work</h5>
-                </div>
-            </a>
+        <!-- Buttons as navigation options -->
+        <a href="@Url.Action("ShowWork", "ShowWork")" class="btn btn-custom">
+            <i class="fas fa-clipboard-list"></i> Show Work
+        </a>
+        <a href="@Url.Action("Records", "Records")" class="btn btn-custom">
+            <i class="fas fa-file-alt"></i> Records
+        </a>
+    </div>
 
-            <!-- Card for Records -->
-            <a href="@Url.Action("Records", "Records")" class="card card-custom text-decoration-none">
-                <div class="card-body">
-                    <i class="fas fa-file-alt card-icon"></i>
-                    <h5 class="card-title">Records</h5>
-                </div>
-            </a>
-        </div>
+    <!-- Footer with Logout and Change Password buttons -->
+    <div class="footer-buttons">
+        <a href="@Url.Action("Index", "Login")" class="btn btn-back"><i class="fas fa-arrow-left"></i>Logout</a>
+        <a href="@Url.Action("UpdatePassword", "UpdatePassword")" class="btn btn-change-password">Change Password</a>
     </div>
 
     <!-- Bootstrap and Font Awesome JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            document.getElementById("loading-overlay").style.display = "none";
+        });
+    </script>
 </body>
 </html>

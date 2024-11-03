@@ -104,8 +104,7 @@ namespace ATEngineersAttendanceProject.Controllers.Admin
             };
             _context.AttendancePage.Add(workEntry);
             await _context.SaveChangesAsync();
-
-            ViewBag.SuccessMessage = "Work alloted successful!";
+            ViewBag.SuccessMessage = "Work allotment successful!"; // Pass success message
             return await AllotWork();
         }
         [HttpGet]

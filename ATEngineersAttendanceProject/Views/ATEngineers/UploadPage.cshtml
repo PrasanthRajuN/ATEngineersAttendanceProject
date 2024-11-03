@@ -7,28 +7,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #E6F1FA;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+            max-width: 500px;
+            background-color: #D4E7F5;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: #005a92;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .form-label {
+            color: #4A6B8A;
+        }
+
+        #uploadBtn {
+            background-color: #0074b7;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        #uploadBtn:hover {
+            background-color: #005a92;
+        }
+
+        #backBtn {
+            background-color: #b2d0e4;
+            border: none;
+            color: #005a92;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        #backBtn:hover {
+            background-color: #92b8d2;
+        }
+
+        #toastMessage {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        video {
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            border: 2px solid #0074b7;
+            width: 100%;
+            height: auto;
+            max-height: 240px;
+        }
+
+        .toast-body {
+            color: white;
+        }
+    </style>
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
-    <div id="toastMessage" class="toast align-items-center text-bg-@ViewBag.ToastType border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+    <div id="toastMessage" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
         <div class="d-flex">
             <div class="toast-body">
                 @ViewBag.ToastMessage
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn -close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
-    <div class="container mt-5">
+
+    <div class="container">
+        <!-- Back Button -->
+        <a href="@Url.Action("ShowWork", "ShowWork")" id="backBtn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+
         <h2>Upload Picture and Location</h2>
-        <h1 style="display:none">@ViewBag.Message</h1>
         <form asp-action="UploadPage" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
+            <div class="mb-4">
                 <!-- Display live video stream with flip correction -->
-                <video id="video" width="320" height="240" autoplay style="transform: scaleX(-1);"></video>
+                <video id="video" autoplay style="transform: scaleX(-1);"></video>
                 <input type="hidden" name="Id" value="@ViewBag.message" />
 
                 <!-- Hidden canvas for image capture -->
-                <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+                <canvas id="canvas" style="display:none;"></canvas>
 
                 <!-- Hidden inputs for form submission -->
                 <input type="hidden" name="Image" id="ImageInput" />
@@ -41,74 +150,80 @@
             </div>
             <div class="mb-3">
                 <label for="remarks" class="form-label">Remarks</label>
-                <input type="text" name="remarks" class="form-control" id="remarks" required />
+                <input type="text" name="remarks" class="form-control" id="remarks" placeholder="remarks if any..." required />
             </div>
-            <button type="submit" id="uploadBtn" class="btn btn-primary">Upload</button>
+            <button type="submit" id="uploadBtn" class="btn btn-primary w-100">Upload</button>
         </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Access the user's camera and show live video stream
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const context = canvas.getContext('2d');
         const imageInput = document.getElementById('ImageInput');
         const latitudeInput = document.getElementById('LatitudeInput');
         const longitudeInput = document.getElementById('LongitudeInput');
+        const loadingOverlay = document.getElementById('loading-overlay');
 
         // Start video stream from the camera
         navigator.mediaDevices.getUserMedia({ video: true })
             .then((stream) => {
                 video.srcObject = stream;
+                video.play();
             })
             .catch((err) => {
                 console.error("Error accessing camera: " + err);
+                alert("Unable to access the camera. Please check your permissions.");
             });
 
-        // Take a picture and store it as Base64 when the upload button is clicked
+        // Capture image and location on form submission
         document.getElementById('uploadBtn').addEventListener('click', function (event) {
-            // Prevent default form submission
             event.preventDefault();
+            loadingOverlay.style.display = 'flex';
 
-            // Check if a file is selected
             const reportInput = document.getElementById('report');
             if (!reportInput.files.length) {
                 alert("Please upload a file.");
-                return; // Exit the function if no file is selected
+                loadingOverlay.style.display = 'none';
+                return;
             }
 
-            // Capture the image
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL('image/png').split(',')[1]; // Convert image to Base64
-            imageInput.value = imageData;
+            imageInput.value = canvas.toDataURL('image/png').split(',')[1];
 
-            // Get user location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     latitudeInput.value = position.coords.latitude;
                     longitudeInput.value = position.coords.longitude;
 
-                    // Now submit the form
                     document.querySelector('form').submit();
                 }, function (error) {
                     console.error("Error getting location: " + error);
                     alert("Unable to retrieve your location.");
+                    loadingOverlay.style.display = 'none';
                 });
             } else {
                 alert("Geolocation is not supported by this browser.");
+                loadingOverlay.style.display = 'none';
             }
         });
 
-        // Show toast notification if there is a message to display
+        // Show toast notification if message exists
         @if (!string.IsNullOrEmpty(ViewBag.ToastMessage))
         {
             <text>
-                    var toastEl = document.getElementById('toastMessage');
-                    var toast = new bootstrap.Toast(toastEl);
-                    toast.show();
+                var toastEl = document.getElementById('toastMessage');
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+                document.getElementById('toastMessage').style.opacity = 1;
             </text>
         }
+
+        window.addEventListener("load", function () {
+            document.getElementById("loading-overlay").style.display = "none";
+        });
     </script>
 </body>
 </html>
+

@@ -1,5 +1,6 @@
-﻿@{
-    Layout = null;
+﻿@model IEnumerable<ATEngineersAttendanceProject.Models.Admin.AttendancePageModel>
+@{
+    Layout = null; // Assuming this is a standalone page, remove this if using a layout
 }
 
 <!DOCTYPE html>
@@ -7,25 +8,178 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Location Detector</title>
+    <title>AT Engineers Attendance</title>
     <!-- Include Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background-color: #BFD7ED; /* Light blue background */
+        }
+
+        .attendance-table {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            width: 120%; /* Set the width of the container */
+            max-width: 1200px; /* Maximum width for the container */
+            margin-left: -10%; /* Center the container */
+        }
+
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            color: #003B73; /* Change heading color for better contrast */
+            background-color: #E7F3FE; /* Light blue background for table headings */
+            padding: 10px; /* Add padding for better spacing */
+        }
+
+        .table-body {
+            background-color: white;
+        }
+
+        .table-bordered {
+            border: 2px solid #60A3D9;
+        }
+
+        .table-light {
+            background-color: #E7F3FE; /* Change header background to match headings */
+            color: #003B73; /* Change text color to match headings */
+        }
+
+        .btn-primary {
+            background-color: #0074B7; /* Primary button color */
+            border-color: #0074B7;
+            margin-bottom: 15px; /* Space below the button */
+        }
+
+            .btn-primary:hover {
+                background-color: #003B73; /* Dark blue on hover */
+                border-color: #003B73;
+            }
+
+        .btn-custom {
+            background-color: #0074B7;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+        }
+
+            .btn-custom:hover {
+                background-color: #003B7a;
+                color: white;
+            }
+
+        h3 {
+            color: #003B73;
+        }
+
+        .backbutton {
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+
+        /* Responsive design for smaller screens */
+        @@media(max-width: 500px) {
+            .table-responsive {
+                width: 90%;
+            }
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h3 class="text-center">Click the Button to Get Your Location</h3>
-        <div class="d-flex justify-content-center">
-            <button id="getLocationBtn" class="btn btn-primary">Get My Location</button>
+    <div id="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <a href="@Url.Action("AdminPage","Admin")" class="btn btn-primary mb-2 mr-2 backbutton">Back</a>
 
-        <div id="locationResult" class="mt-3 text-center"></div>
+                <div class="attendance-table p-4 shadow">
+                    <h3 class="text-center text-uppercase mb-4">Allotted Work</h3>
+                    <div class="table-responsive" style="text-align:center">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>WorkId</th>
+                                    <th>EngineerId</th>
+                                    <th>AT Engineer</th>
+                                    <th>Section</th>
+                                    <th>Department</th>
+                                    <th>District</th>
+                                    <th>Mandal</th>
+                                    <th>Village</th>
+                                    <th>Location</th>
+                                    <th>PO No</th>
+                                    <th>PO Code</th>
+                                    <th>PO Date</th>
+                                    <th>PO Copy</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-body">
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var sec in Model)
+                                    {
+                                        <tr>
+                                            <td>@sec.WorkId</td>
+                                            <td>@sec.EngineerId</td>
+                                            <td>@sec.Name</td>
+                                            <td>@sec.Section</td>
+                                            <td>@sec.Department</td>
+                                            <td>@sec.District</td>
+                                            <td>@sec.Mandal</td>
+                                            <td>@sec.Village</td>
+                                            <td>@sec.Location</td>
+                                            <td>@sec.PONo</td>
+                                            <td>@sec.POCode</td>
+                                            <td>@sec.PODate</td>
+                                            <td>
+                                                <a href="@Url.Action("GetPOFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link">Show file</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <a href="@Url.Action("ATEngineersAttendancePage", "ATEngineersAttendancePage")" class="btn btn-custom mt-3">ATEngineers Attendance</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap JS (Optional but needed if you want interactive elements like modals) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Geolocation Script -->
-    
-
+    <script>
+        window.addEventListener("load", function () {
+            document.getElementById("loading-overlay").style.display = "none";
+        });
+    </script>
 </body>
 </html>

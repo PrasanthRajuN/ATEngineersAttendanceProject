@@ -9,53 +9,166 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AT Engineers Attendance</title>
-    <!-- Include Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <style>
-        /* Custom styling for better aesthetics */
         body {
-            background-color: #EDE7F6;
+            background-color: #F0F8FF;
         }
 
         .attendance-table {
-            background-color: white;
+            background-color: #BFD7ED;
             border-radius: 8px;
             padding: 20px;
-            background-color: #e5d0ff;
+            margin: 0 auto;
         }
 
         th, td {
             text-align: center;
             vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        th {
+            color: #0074b7;
+            background-color: #e0f7fa;
+            padding: 10px;
         }
 
         .table-body {
             background-color: white;
         }
 
-        /* Make rows look clickable */
-        .clickable-row {
-            cursor: pointer;
+        .table-bordered {
+            border: 2px solid #0074b7;
         }
 
-            .clickable-row:hover {
-                background-color: #d3c4ff;
+        .btn-primary {
+            background-color: royalblue;
+            border-color: royalblue;
+            margin-bottom: 15px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .btn-custom {
+            background-color: royalblue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        h3 {
+            color: #0074b7;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Responsive design */
+        @@media (max-width: 576px) {
+            .table-responsive table,
+            .table-responsive thead,
+            .table-responsive tbody,
+            .table-responsive th,
+            .table-responsive td,
+            .table-responsive tr {
+                display: block;
+                width: 100%;
             }
+
+            .table-responsive tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            .table-responsive th {
+                display: none;
+            }
+
+            .table-responsive td {
+                text-align: left;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .table-responsive td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                font-weight: bold;
+                color: #0074b7;
+            }
+
+            .table-responsive td:last-child {
+                text-align: right; /* Align the last column content to the right */
+            }
+        }
+
+        /* Remove horizontal scroll on larger screens */
+        @@media (min-width: 577px) {
+            .table-responsive {
+                overflow-x: auto; /* Allow horizontal scroll only when necessary */
+            }
+
+            table {
+                width: 100%; /* Ensure table takes full width */
+                table-layout: auto; /* Allow the table layout to adjust based on content */
+            }
+
+            th, td {
+                overflow: hidden; /* Hide overflow */
+                text-overflow: ellipsis; /* Add ellipsis for overflow text */
+                white-space: nowrap; /* Prevent wrapping */
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually -hidden">Loading...</span>
+        </div>
+    </div>
+
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-8">
-                <a href="@Url.Action("ATEngineersPage", "ATEngineers")" class="btn btn-primary mb-2 mr-2">Back</a>
+                <a href="@Url.Action("ATEngineersPage", "ATEngineers")" class="btn btn-primary mb-2">Back</a>
                 <div class="attendance-table p-4 shadow">
-                    <h3 class="text-center text-uppercase mb-4" style="color: #6C3483;">Your Work</h3>
-                    <div class="table-responsive" style="text-align:center">
+                    <h3 class="text-center text-uppercase mb-4">Your Work</h3>
+                    
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <td>WorkId</td>
+                                    <th>WorkId</th>
                                     <th>Name</th>
                                     <th>Section</th>
                                     <th>Department</th>
@@ -67,7 +180,7 @@
                                     <th>PO Code</th>
                                     <th>PO Date</th>
                                     <th>PO Copy</th>
-                                    <th>Submit</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody class="table-body">
@@ -76,22 +189,22 @@
                                     foreach (var sec in Model)
                                     {
                                         <tr class="clickable-row" onclick="window.location.href='@Url.Action("UploadPage", "Upload", new { Attendanceid = sec.WorkId })'">
-                                            <td>@sec.WorkId</td>
-                                            <td>@sec.Name</td>
-                                            <td>@sec.Section</td>
-                                            <td>@sec.Department</td>
-                                            <td>@sec.District</td>
-                                            <td>@sec.Mandal</td>
-                                            <td>@sec.Village</td>
-                                            <td>@sec.Location</td>
-                                            <td>@sec.PONo</td>
-                                            <td>@sec.POCode</td>
-                                            <td>@sec.PODate</td>
-                                            <td>
+                                            <td data-label="WorkId">@sec.WorkId</td>
+                                            <td data-label="Name">@sec.Name</td>
+                                            <td data-label="Section">@sec.Section</td>
+                                            <td data-label="Department">@sec.Department</td>
+                                            <td data-label="District">@sec.District</td>
+                                            <td data-label="Mandal">@sec.Mandal</td>
+                                            <td data-label="Village">@sec.Village</td>
+                                            <td data-label="Location">@sec.Location</td>
+                                            <td data-label="PO No">@sec.PONo</td>
+                                            <td data-label="PO Code">@sec.POCode</td>
+                                            <td data-label="PO Date">@sec.PODate</td>
+                                            <td data-label="PO Copy">
                                                 <a href="@Url.Action("GetPOFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link" download onclick="event.stopPropagation()">Show file</a>
                                             </td>
                                             <td>
-                                                <a style="background-color:#793ccf; color:white" href="@Url.Action("UploadPage", "Upload", new { Attendanceid = sec.WorkId })" class="btn btn-custom" onclick="event.stopPropagation()">Upload</a>
+                                                <a href="@Url.Action("UploadPage", "Upload", new { Attendanceid = sec.WorkId })" class="btn btn-custom" onclick="event.stopPropagation()">Upload</a>
                                             </td>
                                         </tr>
                                     }
@@ -99,7 +212,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="12" class="text-center">No Work available.</td>
+                                        <td colspan="13" class="text-center">No Work available.</td>
                                     </tr>
                                 }
                             </tbody>
@@ -110,7 +223,11 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            document.getElementById("loading-overlay").style.display = "none";
+        });
+    </script>
 </body>
 </html>
