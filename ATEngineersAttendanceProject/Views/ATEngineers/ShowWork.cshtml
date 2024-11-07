@@ -14,15 +14,22 @@
     <style>
         body {
             background-color: #F0F8FF;
+
         }
 
         .attendance-table {
             background-color: #BFD7ED;
             border-radius: 8px;
             padding: 20px;
-            margin: 0 auto;
+            width: 90%; /* Make the table container 90% of the screen width */
+            overflow-x: auto; /* Allow horizontal scrolling */
+            margin: 0 auto; /* Center the table */
         }
-
+        /* Ensure the table takes up the full width of its container */
+        .table {
+            width: 100%; /* Table should take up the full width of the parent container */
+            /* Fixed table layout to ensure proper column width distribution */
+        }
         th, td {
             text-align: center;
             vertical-align: middle;
@@ -43,7 +50,7 @@
             border: 2px solid #0074b7;
         }
 
-        .btn-primary {
+        .btn-primary:hover, .btn-back:hover {
             background-color: royalblue;
             border-color: royalblue;
             margin-bottom: 15px;
@@ -89,6 +96,10 @@
             height: 3rem;
         }
 
+        .table-responsive {
+            width: 100%; /* Ensure the responsive wrapper takes up full width */
+            overflow-x: auto; /* Allow horizontal scroll */
+        }
         /* Responsive design */
         @@media (max-width: 576px) {
             .table-responsive table,
@@ -157,9 +168,9 @@
         </div>
     </div>
 
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-10 col-lg-8">
+            <div class="col-md-12">
                 <a href="@Url.Action("ATEngineersPage", "ATEngineers")" class="btn btn-primary mb-2">Back</a>
                 <div class="attendance-table p-4 shadow">
                     <h3 class="text-center text-uppercase mb-4">Your Work</h3>

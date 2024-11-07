@@ -133,11 +133,11 @@
         <form asp-action="UploadPage" method="post" enctype="multipart/form-data">
             <div class="mb-4">
                 <!-- Display live video stream with flip correction -->
-                <video id="video" autoplay style="transform: scaleX(-1);"></video>
+                <video id="video" width="320" height="240" autoplay style="transform: scaleX(-1);"></video>
                 <input type="hidden" name="Id" value="@ViewBag.message" />
 
                 <!-- Hidden canvas for image capture -->
-                <canvas id="canvas" style="display:none;"></canvas>
+                <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
 
                 <!-- Hidden inputs for form submission -->
                 <input type="hidden" name="Image" id="ImageInput" />

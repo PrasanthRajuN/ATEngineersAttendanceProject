@@ -143,6 +143,34 @@
                 color: #6C3483;
             }
         }
+
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px; /* Reduced padding */
+            border: none; /* Removed border for cleaner look */
+        }
+        .image-preview {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px; /* Adjusted position */
+            right: 10px;
+            font-size: 24px;
+            color: #ffffff;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -156,7 +184,7 @@
             <div class="col-12">
                 <a href="@Url.Action("AdminPage","Admin")" class="btn btn-primary mb-2 ms-3">Back</a>
                 <div class="attendance-table p-4 shadow">
-                    <h3 class="text-center text-uppercase mb-4">Allotted Work</h3>
+                    <h3 class="text-center text-uppercase mb-4">Submitted Work</h3>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead class="table-light">
@@ -174,6 +202,9 @@
                                     <th>PO Code</th>
                                     <th>PO Date</th>
                                     <th>PO Copy</th>
+                                    <th>Uploaded AT Report</th>
+                                    <th>Uploaded Selfie</th>
+                                    <th>Remarks</th>
                                 </tr>
                             </thead>
                             <tbody class="table-body">
@@ -197,6 +228,21 @@
                                             <td data-label="PO Copy">
                                                 <a href="@Url.Action("GetPOFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link">Show file</a>
                                             </td>
+                                            <td data-label="Report">
+                                                <a href="@Url.Action("GetReportFile", "ATEngineersAttendancePage", new { id = sec.WorkId })" target="_blank" class="btn btn-link">Show file</a>
+                                            </td>
+
+                                            <td data-label="Image">
+                                                <span class="show-file" onclick="showImage('selfie', @sec.WorkId)">Show Image</span>
+                                            </td>
+                                            @if (@sec.Remarks != null)
+                                            {
+                                                <td data-label="Remarks">@sec.Remarks</td>
+                                            }
+                                            else
+                                            {
+                                                <td data-label="Remarks">No Remarks</td>
+                                            }
                                         </tr>
                                     }
                                 }
@@ -209,6 +255,16 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal for Image Preview -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <span class="close-btn" data-bs-dismiss="modal">&times;</span>
+                    <img id="image-preview" class="image-preview" src="" alt="Image Preview" />
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -216,6 +272,12 @@
         window.addEventListener("load", function () {
             document.getElementById("loading-overlay").style.display = "none";
         });
+        function showImage(type, Id) {
+            var imageUrl = '@Url.Action("GetImage", "ATEngineersAttendancePage")?id=' + Id;
+            document.getElementById('image-preview').src = imageUrl;
+            var modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
+        }
     </script>
 </body>
 </html>

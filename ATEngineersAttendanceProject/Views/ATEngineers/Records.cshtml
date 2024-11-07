@@ -1,9 +1,7 @@
-﻿@model IEnumerable<ATEngineersAttendanceProject.Models.Admin.AttendancePageModel>
-@{
-    Layout = null; // Assuming this is a standalone page, remove this if using a layout
-}
-
+﻿
+@model IEnumerable<ATEngineersAttendanceProject.Models.Admin.AttendancePageModel>
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -14,20 +12,23 @@
     <style>
         body {
             background-color: #F0F8FF;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
         }
 
+        /* Expand the table container to 90% of the screen width */
         .attendance-table {
             background-color: #BFD7ED;
             border-radius: 8px;
             padding: 20px;
-            max-width: 1000px;
-            margin: 0 auto;
+            width: 90%; /* Make the table container 90% of the screen width */
+            overflow-x: auto; /* Allow horizontal scrolling */
+            margin: 0 auto; /* Center the table */
         }
-
+        /* Ensure the table takes up the full width of its container */
+        .table {
+            width: 100%; /* Table should take up the full width of the parent container */
+        /* Fixed table layout to ensure proper column width distribution */
+        }
+    
         th, td {
             text-align: center;
             vertical-align: middle;
@@ -96,7 +97,13 @@
             height: 3rem;
         }
 
-        /* Responsive design */
+        /* Ensure the table scrolls horizontally if it exceeds the screen width */
+        .table-responsive {
+            width: 100%;  /* Ensure the responsive wrapper takes up full width */
+            overflow-x: auto;  /* Allow horizontal scroll */
+        }
+
+        /* Mobile-specific styles */
         @@media (max-width: 576px) {
             .table-responsive table,
             .table-responsive thead,
@@ -137,23 +144,6 @@
                 text-align: right;
             }
         }
-
-        @@media (min-width: 577px) {
-            .table-responsive {
-                overflow-x: auto;
-            }
-
-            table {
-                width: 100%;
-                table-layout: auto;
-            }
-
-            th, td {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-        }
     </style>
 </head>
 <body>
@@ -163,9 +153,9 @@
         </div>
     </div>
 
-    <div class="container mt-5">
+    <div class="container-fluid mt-5"> <!-- Use container-fluid to allow full width expansion -->
         <div class="row justify-content-center">
-            <div class="col-md-10 col-lg-8">
+            <div class="col-md-12"> <!-- Set to col-md-12 to allow the table to take up the full width -->
                 <a href="@Url.Action("ATEngineersPage","ATEngineers")" class="btn btn-back mb-2">Back</a>
                 <div class="attendance-table p-4 shadow">
                     <h3 class="text-center text-uppercase mb-4">Records</h3>
@@ -195,7 +185,7 @@
                                 {
                                     foreach (var sec in Model)
                                     {
-                                        <tr class="clickable-row" onclick="window.location.href='@Url.Action("UploadPage", "Upload", new { Attendanceid = sec.WorkId })'">
+                                        <tr class="clickable-row" >
                                             <td data-label="WorkId">@sec.WorkId</td>
                                             <td data-label="Id">@sec.EngineerId</td>
                                             <td data-label="Name">@sec.Name</td>
