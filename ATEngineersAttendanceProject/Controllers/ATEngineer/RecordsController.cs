@@ -19,7 +19,7 @@ namespace ATEngineersAttendanceProject.Controllers.ATEngineer
             int userId = int.Parse(userIdString);
             ViewBag.UserId = userId;
             ViewBag.Password = password;
-            var records = await _context.AttendancePage.Where(a => a.EngineerId == userId).ToListAsync();
+            var records = await _context.AttendancePage.Where(a => a.EngineerId == userId && a.ImageColumn!=null).ToListAsync();
             return View("~/Views/ATEngineers/Records.cshtml", records);
         }
     }
