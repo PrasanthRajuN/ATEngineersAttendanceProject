@@ -22,10 +22,6 @@ namespace ATEngineersAttendanceProject.Controllers.Admin
             {
                 Sections = await _context.Sections.ToListAsync(),
                 Departments = await _context.Department.ToListAsync(),
-                District = await _context.District.ToListAsync(),
-                Mandal = await _context.Mandal.ToListAsync(),
-                Village = await _context.Village.ToListAsync(),
-                Location = await _context.Location.ToListAsync(),
                 ATEngineer = await _context.ATEngineer.ToListAsync(),
                 Locations = await _context.Locations.GroupBy(l => l.District).Select(g => g.First()).Distinct().ToListAsync()
             };

@@ -15,7 +15,6 @@ namespace ATEngineersAttendanceProject.Controllers.ATEngineer
         {
             string userIdString = HttpContext.Session.GetString("UserID");
             string password = HttpContext.Session.GetString("Password");
-
             int userId = int.Parse(userIdString);
             ViewBag.UserId = userId;
             ViewBag.Password = password;
